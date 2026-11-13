@@ -1,0 +1,88 @@
+# Dependências e gerenciadores
+**/node_modules/
+**/vendor/bundle/
+**/Pods/
+.yarn/*
+!.yarn/patches/
+!.yarn/plugins/
+!.yarn/releases/
+!.yarn/sdks/
+!.yarn/versions/
+
+# Variáveis locais e credenciais
+.env
+.env.*
+!.env.example
+*.jks
+*.keystore
+*.p12
+*.pfx
+*.pem
+*.key
+*.mobileprovision
+
+# Bancos e dados locais
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+*.sqlite3
+
+# Android, Gradle e artefatos nativos
+**/.gradle/
+**/.cxx/
+**/.kotlin/
+**/build/
+**/local.properties
+*.apk
+*.aab
+*.hprof
+*.so
+
+# iOS e Xcode
+**/DerivedData/
+**/xcuserdata/
+*.ipa
+*.xcuserstate
+**/.xcode.env.local
+
+# Testes, cobertura, Metro e logs
+**/coverage/
+.nyc_output/
+.metro-health-check*
+*.jsbundle
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editores e sistema operacional
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+*~
+
+# Arquivos temporários
+*.tmp
+*.temp
+*.bak
+*.orig
+.cache/
+tmp/
+temp/
+
+# Materiais internos de trabalho que não fazem parte do portfólio público
+AGENTS.md
+MEMORIA_PROJETO.md
+REVISAO_SECAO_2_5_TCC*
+DOCUMENTACAO_END_TO_END.pdf
+
+# A chave debug padrão do projeto React Native é necessária apenas para builds locais.
+# O .gitignore específico de mobile mantém debug.keystore disponível.

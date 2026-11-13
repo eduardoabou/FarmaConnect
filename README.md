@@ -1,0 +1,229 @@
+# FarmaConnect
+
+[![React Native](https://img.shields.io/badge/React_Native-0.87-61DAFB?logo=react&logoColor=0b2239)](https://reactnative.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-6-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Android](https://img.shields.io/badge/Android-API_24%2B-3DDC84?logo=android&logoColor=white)](https://developer.android.com/)
+[![Supabase](https://img.shields.io/badge/Supabase-Auth%20%7C%20Database%20%7C%20Storage-3FCF8E?logo=supabase&logoColor=white)](https://supabase.com/)
+[![Testes](https://img.shields.io/badge/Jest-17%20testes%20aprovados-C21325?logo=jest&logoColor=white)](#qualidade-e-testes)
+
+Aplicativo Android para consulta offline de catálogos farmacêuticos e impressão de etiquetas térmicas na **NIIMBOT B1**. O FarmaConnect combina autenticação e dados centralizados no Supabase com uma réplica local em SQLite, permitindo que cada farmácia continue consultando e imprimindo seu catálogo após a primeira sincronização.
+
+> Projeto acadêmico desenvolvido como Trabalho de Conclusão de Curso em Engenharia da Computação.
+
+## Problema e proposta
+
+A atualização manual de etiquetas pode exigir consulta em sistemas separados, deslocamento até um computador e repetição de informações. O FarmaConnect concentra a consulta do catálogo e a impressão no celular, mantendo o Supabase como fonte oficial e o SQLite como cópia operacional offline.
+
+A aplicação foi construída para um fluxo específico: **autenticar, sincronizar o catálogo autorizado, localizar produtos e imprimir etiquetas individuais ou em massa**. Ela não realiza vendas, pagamentos, controle de estoque ou edição administrativa de produtos.
+
+## Funcionalidades implementadas
+
+- Autenticação por e-mail e senha com Supabase Auth.
+- Isolamento do catálogo por farmácia com Row Level Security (RLS).
+- Sincronização unidirecional do Supabase para o SQLite.
+- Consulta offline após a primeira sincronização bem-sucedida.
+- Busca por nome e filtro por categoria.
+- Descoberta e conexão Bluetooth Low Energy com a NIIMBOT B1.
+- Impressão individual e impressão em massa.
+- Etiqueta térmica de 50 × 30 mm com nome, data, farmácia, EAN textual, código interno e preço.
+- QR Code opcional para abrir a bula em PDF no navegador, sem exigir o aplicativo no celular leitor.
+- Limpeza dos dados locais da farmácia ativa ao encerrar a sessão.
+
+## Demonstração visual
+
+As capturas serão adicionadas em [`docs/images/`](docs/images/README.md). A estrutura já reserva os seguintes materiais:
+
+| Tela ou evidência | Arquivo sugerido |
+| --- | --- |
+| Login | `docs/images/login.png` |
+| Catálogo e busca | `docs/images/catalogo.png` |
+| Conexão com a NIIMBOT B1 | `docs/images/impressora.png` |
+| Etiqueta impressa | `docs/images/etiqueta.jpg` |
+| QR Code abrindo a bula | `docs/images/bula-qr.png` |
+
+**Vídeo demonstrativo:** link a adicionar após a gravação e publicação.
+
+## Arquitetura
+
+```mermaid
+flowchart LR
+  U[Usuário da farmácia] --> APP[Android<br/>React Native + TypeScript]
+  APP --> AUTH[Supabase Auth]
+  APP --> API[PostgREST + RLS]
+  API --> PG[(PostgreSQL)]
+  APP <--> DB[(SQLite local)]
+  APP --> STORAGE[Supabase Storage<br/>bulas em PDF]
+  APP --> BLE[Bluetooth Low Energy]
+  BLE --> B1[NIIMBOT B1]
+  B1 --> LABEL[Etiqueta com QR opcional]
+  LABEL --> PDF[Bula no navegador]
+```
+
+O Supabase é a fonte oficial. O aplicativo autenticado recebe somente os registros liberados pelas políticas RLS e os grava no SQLite usando o `pharmacy_id` da conta. A sincronização não envia alterações locais para a nuvem. No logout, o catálogo e o estado de sincronização da farmácia ativa são removidos do aparelho.
+
+Detalhes adicionais estão em:
+
+- [Arquitetura e fluxos](docs/ARCHITECTURE.md)
+- [Segurança e privacidade](docs/SECURITY.md)
+- [Documentação técnica completa](DOCUMENTACAO_END_TO_END.md)
+
+## Tecnologias principais
+
+| Área | Tecnologia | Responsabilidade |
+| --- | --- | --- |
+| Aplicativo | React Native 0.87.1, React 19.2.3 e TypeScript 6 | Interface, ciclo de vida e regras do cliente Android |
+| Backend | Supabase Auth, PostgreSQL, PostgREST e RLS | Autenticação, catálogo oficial e isolamento por farmácia |
+| Dados offline | SQLite com `@op-engineering/op-sqlite` | Catálogo local e estado de sincronização |
+| Arquivos | Supabase Storage | PDFs públicos de bula acessados pelo QR Code |
+| Bluetooth | `react-native-ble-plx` | Busca, conexão e comunicação BLE |
+| Impressão | `@slastra/nblib` | Protocolo e trabalho de impressão da NIIMBOT B1 |
+| QR Code | `qrcode-generator` | Codificação da URL pública da bula |
+| Armazenamento seguro | `react-native-keychain` | Sessão Supabase e perfil local protegido |
+| Qualidade | Jest, ESLint e TypeScript | Testes e análise estática |
+
+## Estrutura do repositório
+
+```text
+FarmaConnect/
+├── mobile/                    # Aplicativo React Native e projeto Android
+│   ├── src/                   # Domínio, telas, SQLite, Supabase e impressão
+│   ├── __tests__/             # Testes Jest
+│   ├── android/               # Código e configuração Android nativa
+│   └── scripts/android.ps1    # Build, instalação e consulta ADB
+├── supabase/
+│   ├── migrations/            # Tabelas, índices, RLS, Storage e políticas
+│   ├── seed/                  # Catálogo demonstrativo
+│   └── verification/          # Roteiro SQL de verificação manual
+├── docs/                      # Arquitetura, segurança e imagens do portfólio
+└── README.md
+```
+
+## Requisitos
+
+- Windows com PowerShell.
+- Node.js 22.11 ou superior e npm.
+- JDK 17.
+- Android SDK e `adb` configurados.
+- Um projeto Supabase.
+- Celular Android físico com API 24 ou superior.
+- NIIMBOT B1 para validar a impressão física.
+
+O desenvolvimento e a homologação registrados no projeto foram realizados em um **Samsung Galaxy A70 com Android 11**, sem emulador.
+
+## Configuração local
+
+1. Clone o repositório e instale as dependências:
+
+   ```powershell
+   git clone https://github.com/eduardoabou/FarmaConnect.git
+   cd FarmaConnect\mobile
+   npm.cmd ci
+   ```
+
+2. Crie a configuração local a partir do exemplo:
+
+   ```powershell
+   Copy-Item .env.example .env
+   ```
+
+3. Preencha apenas as configurações públicas do cliente:
+
+   ```env
+   SUPABASE_URL=https://seu-projeto.supabase.co
+   SUPABASE_PUBLISHABLE_KEY=sb_publishable_substitua_esta_chave
+   ```
+
+   Nunca adicione `service_role`, senha do banco ou credenciais administrativas ao aplicativo.
+
+4. Aplique as migrações do diretório [`supabase/migrations`](supabase/migrations) pelo SQL Editor ou pela Supabase CLI, respeitando a ordem dos nomes dos arquivos. O catálogo de demonstração está em [`supabase/seed`](supabase/seed).
+
+## Executar no Android
+
+Com um único celular autorizado por USB:
+
+```powershell
+cd mobile
+npm.cmd run android:devices
+```
+
+Para desenvolvimento com Metro, use dois terminais:
+
+```powershell
+# Terminal 1
+npm.cmd start
+
+# Terminal 2
+npm.cmd run android
+```
+
+Para gerar o APK preview independente do Metro:
+
+```powershell
+npm.cmd run apk:build
+```
+
+O artefato é criado em:
+
+```text
+mobile/android/app/build/outputs/apk/preview/app-preview.apk
+```
+
+Para instalar um APK preview já compilado:
+
+```powershell
+npm.cmd run apk:install
+```
+
+## Qualidade e testes
+
+Execute na pasta `mobile`:
+
+```powershell
+npm.cmd run typecheck
+npm.cmd run lint
+npm.cmd test -- --runInBand
+```
+
+Verificação local realizada em **13 de novembro de 2026**:
+
+| Verificação | Resultado |
+| --- | --- |
+| TypeScript | Aprovado |
+| ESLint | Aprovado |
+| Jest | 10 suítes e 17 testes aprovados; 0 falhas |
+
+Os testes cobrem inicialização, catálogo, SQLite, estado de sincronização, e-mail lembrado, URL da bula, composição/raster da etiqueta e filtro de descoberta NIIMBOT. A comunicação e a impressão física também exigem homologação no aparelho e na impressora.
+
+## Segurança
+
+- O `.env` real não é versionado.
+- O APK recebe somente URL e chave publicável do Supabase.
+- O acesso remoto é limitado por autenticação e políticas RLS.
+- Sessão e perfil em cache usam o armazenamento seguro do Android.
+- O SQLite fica no armazenamento privado do aplicativo; ele não usa criptografia própria nesta versão.
+- O bucket de bulas é público somente para permitir que o QR Code abra o PDF sem autenticação.
+- A chave de depuração Android não deve ser reutilizada para uma publicação de produção.
+
+Consulte [docs/SECURITY.md](docs/SECURITY.md) antes de publicar ou distribuir o APK.
+
+## Limitações conhecidas
+
+- Aplicativo concentrado na plataforma Android.
+- Impressão homologada para a NIIMBOT B1.
+- O primeiro login e a primeira sincronização exigem internet.
+- A leitura da bula pelo QR Code depende de internet no celular leitor.
+- O banco SQLite local não utiliza SQLCipher.
+- A variante de produção ainda exige uma chave de assinatura própria.
+
+## Equipe e contexto acadêmico
+
+O FarmaConnect foi desenvolvido em equipe como **Trabalho de Conclusão de Curso em Engenharia da Computação** pelos integrantes:
+
+- **Eduardo Abou Antoun**
+- **Murilo Blumer Rios**
+
+O projeto é apresentado como uma realização coletiva. Este repositório não atribui módulos ou contribuições individuais sem documentação específica que as comprove.
+
+## Licença
+
+Este repositório não possui licença definida neste momento.
