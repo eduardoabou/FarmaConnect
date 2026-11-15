@@ -6,15 +6,35 @@
 [![Supabase](https://img.shields.io/badge/Supabase-Auth%20%7C%20Database%20%7C%20Storage-3FCF8E?logo=supabase&logoColor=white)](https://supabase.com/)
 [![Testes](https://img.shields.io/badge/Jest-17%20testes%20aprovados-C21325?logo=jest&logoColor=white)](#qualidade-e-testes)
 
-Aplicativo Android para consulta offline de catálogos farmacêuticos e impressão de etiquetas térmicas na **NIIMBOT B1**. O FarmaConnect combina autenticação e dados centralizados no Supabase com uma réplica local em SQLite, permitindo que cada farmácia continue consultando e imprimindo seu catálogo após a primeira sincronização.
+Aplicativo Android para **consulta de catálogos farmacêuticos armazenados localmente** e **impressão de etiquetas térmicas na NIIMBOT B1**. O FarmaConnect combina autenticação e dados centralizados no Supabase com uma cópia operacional em SQLite, permitindo consultar o catálogo e imprimir etiquetas sem conexão após a primeira sincronização bem-sucedida.
 
 > Projeto acadêmico desenvolvido como Trabalho de Conclusão de Curso em Engenharia da Computação.
 
 ## Problema e proposta
 
-A atualização manual de etiquetas pode exigir consulta em sistemas separados, deslocamento até um computador e repetição de informações. O FarmaConnect concentra a consulta do catálogo e a impressão no celular, mantendo o Supabase como fonte oficial e o SQLite como cópia operacional offline.
+A atualização manual de etiquetas pode exigir consulta em sistemas separados, deslocamento até um computador e repetição de informações. O FarmaConnect concentra a consulta do catálogo e a impressão no celular, mantendo o Supabase como fonte oficial e o SQLite como armazenamento local para uso após a sincronização.
 
 A aplicação foi construída para um fluxo específico: **autenticar, sincronizar o catálogo autorizado, localizar produtos e imprimir etiquetas individuais ou em massa**. Ela não realiza vendas, pagamentos, controle de estoque ou edição administrativa de produtos.
+
+## Aplicativo em funcionamento
+
+<p align="center">
+  <img src="docs/images/catalogo.jpg" width="255" alt="Catálogo do FarmaConnect com pesquisa, filtro por categoria e opções de informação e impressão" />
+  &nbsp;&nbsp;
+  <img src="docs/images/catalogo-qr.jpg" width="255" alt="Catálogo do FarmaConnect mostrando QR Code opcional e data da última sincronização" />
+</p>
+
+<p align="center"><em>À esquerda: catálogo, busca e filtros por categoria. À direita: produtos, indicador de QR Code e última sincronização.</em></p>
+
+### Demonstração em vídeo
+
+<a href="docs/videos/demonstracao-farmaconnect.mp4">
+  <img src="docs/images/preview-video.jpg" width="720" alt="Abrir demonstração do FarmaConnect com aplicativo Android e impressora NIIMBOT B1" />
+</a>
+
+**[▶ Assistir à demonstração (1 min 31 s)](docs/videos/demonstracao-farmaconnect.mp4)**
+
+O vídeo apresenta o aplicativo em uso com a impressora **NIIMBOT B1**, incluindo a conexão e a impressão de uma etiqueta física.
 
 ## Funcionalidades implementadas
 
@@ -29,19 +49,13 @@ A aplicação foi construída para um fluxo específico: **autenticar, sincroniz
 - QR Code opcional para abrir a bula em PDF no navegador, sem exigir o aplicativo no celular leitor.
 - Limpeza dos dados locais da farmácia ativa ao encerrar a sessão.
 
-## Demonstração visual
+## Fluxo de funcionamento
 
-As capturas serão adicionadas em [`docs/images/`](docs/images/README.md). A estrutura já reserva os seguintes materiais:
+O fluxo abaixo resume a jornada apresentada no TCC: autenticação, identificação da farmácia, acesso ao catálogo, decisão sobre incluir a bula digital por QR Code e impressão da etiqueta.
 
-| Tela ou evidência | Arquivo sugerido |
-| --- | --- |
-| Login | `docs/images/login.png` |
-| Catálogo e busca | `docs/images/catalogo.png` |
-| Conexão com a NIIMBOT B1 | `docs/images/impressora.png` |
-| Etiqueta impressa | `docs/images/etiqueta.jpg` |
-| QR Code abrindo a bula | `docs/images/bula-qr.png` |
+![Fluxo simplificado do FarmaConnect, do acesso à impressão de etiquetas](docs/images/fluxo-farmaconnect.png)
 
-**Vídeo demonstrativo:** link a adicionar após a gravação e publicação.
+O catálogo é armazenado localmente após a sincronização; o acesso à bula pelo QR Code depende da conexão do aparelho que realiza a leitura.
 
 ## Arquitetura
 
@@ -94,7 +108,9 @@ FarmaConnect/
 │   ├── migrations/            # Tabelas, índices, RLS, Storage e políticas
 │   ├── seed/                  # Catálogo demonstrativo
 │   └── verification/          # Roteiro SQL de verificação manual
-├── docs/                      # Arquitetura, segurança e imagens do portfólio
+├── docs/                      # Documentação e materiais de apresentação
+│   ├── images/               # Capturas de tela, fluxograma e capa do vídeo
+│   └── videos/               # Vídeo demonstrativo do aplicativo e impressão
 └── README.md
 ```
 
