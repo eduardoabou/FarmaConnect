@@ -54,7 +54,7 @@ O Android recebe apenas as permissões necessárias para busca e conexão BLE. E
 
 ## Vulnerabilidades conhecidas em dependências
 
-Em 13 de novembro de 2026, `npm audit --omit=dev` reportou **10 ocorrências transitivas**: 5 baixas, 1 moderada, 3 altas e 1 crítica. Nenhuma dependência foi atualizada automaticamente durante a preparação do repositório.
+Em 13 de novembro de 2026, `npm audit --omit=dev` reportou **10 ocorrências transitivas**: 5 baixas, 1 moderada, 3 altas e 1 crítica. O mesmo resultado foi confirmado novamente em 15 de novembro de 2026. Nenhuma dependência foi atualizada automaticamente durante as revisões.
 
 | Pacote apontado | Severidade agregada | Uso identificado no projeto | Impacto avaliado |
 | --- | --- | --- | --- |
@@ -80,7 +80,7 @@ Isso não elimina o risco para a cadeia de desenvolvimento. Para reduzi-lo:
 - atualize React Native/CLI em uma alteração separada, seguida de TypeScript, ESLint, Jest, build e homologação no Galaxy A70 e na NIIMBOT B1;
 - não use `npm audit fix --force`, pois a correção sugerida pode introduzir versão incompatível ou regressão.
 
-Com as evidências atuais, as vulnerabilidades exigem acompanhamento, mas **não impedem a publicação privada do código-fonte**. Antes de distribuir uma versão de produção, a auditoria deve ser repetida e a cadeia de build deve ser atualizada de forma controlada.
+Com as evidências atuais, as vulnerabilidades exigem acompanhamento, mas **não impedem a publicação pública do código-fonte**. O risco residual está principalmente no ambiente de desenvolvimento e deve ser declarado; este parecer não equivale à aprovação de um APK de produção. Antes de distribuir uma versão de produção, a auditoria deve ser repetida e a cadeia de build deve ser atualizada de forma controlada.
 
 ## Verificação antes de publicar
 
