@@ -5,6 +5,7 @@
 [![Android](https://img.shields.io/badge/Android-API_24%2B-3DDC84?logo=android&logoColor=white)](https://developer.android.com/)
 [![Supabase](https://img.shields.io/badge/Supabase-Auth%20%7C%20Database%20%7C%20Storage-3FCF8E?logo=supabase&logoColor=white)](https://supabase.com/)
 [![Testes](https://img.shields.io/badge/Jest-17%20testes%20aprovados-C21325?logo=jest&logoColor=white)](#qualidade-e-testes)
+[![CI](https://github.com/eduardoabou/FarmaConnect/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/eduardoabou/FarmaConnect/actions/workflows/ci.yml)
 
 Aplicativo Android para **consulta de catálogos farmacêuticos armazenados localmente** e **impressão de etiquetas térmicas na NIIMBOT B1**. O FarmaConnect combina autenticação e dados centralizados no Supabase com uma cópia operacional em SQLite, permitindo consultar o catálogo e imprimir etiquetas sem conexão após a primeira sincronização bem-sucedida.
 
@@ -209,6 +210,10 @@ Verificação local realizada em **13 de novembro de 2026**:
 | Jest | 10 suítes e 17 testes aprovados; 0 falhas |
 
 Os testes cobrem inicialização, catálogo, SQLite, estado de sincronização, e-mail lembrado, URL da bula, composição/raster da etiqueta e filtro de descoberta NIIMBOT. A comunicação e a impressão física também exigem homologação no aparelho e na impressora.
+
+### Integração contínua
+
+O workflow [CI](https://github.com/eduardoabou/FarmaConnect/actions/workflows/ci.yml) executa automaticamente `npm ci`, a verificação do TypeScript, o ESLint e os testes Jest em cada push para a `main` e em Pull Requests direcionados a ela. Essa automação não utiliza credenciais reais do Supabase, não gera APK e não realiza deployment.
 
 ## Segurança
 
